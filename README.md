@@ -5,6 +5,12 @@ Native, offline Linux configurator for Akko keyboards (YC3121 / YC500 family, e.
 engineering the Windows app (v371.2.19). Pure Rust (egui): no Electron, no web engine,
 no account, no telemetry.
 
+![Key remapping](docs/screenshots/config.png)
+
+> **Status:** early release (v0.2.0). Developed and hardware-tested on a **5075B Plus**
+> only. Other models in the same family should work but are unverified. See
+> [Known issues](#known-issues) and the [open issues](https://github.com/Yuxis445/Open-Akko/issues).
+
 ## Features
 
 - **Connection:** USB cable or the 2.4 GHz receiver (battery level shown). Hotplug and
@@ -23,7 +29,51 @@ no account, no telemetry.
 - **Help:** a built-in tab with a guide to every section.
 - **CLI and hardware self-test.**
 
+## Screenshots
+
+| Fn layer | Lighting |
+|---|---|
+| ![Fn layer](docs/screenshots/fn.png) | ![Lighting](docs/screenshots/light.png) |
+| **Settings** | **Key remapping** |
+| ![Settings](docs/screenshots/settings.png) | ![Key remapping](docs/screenshots/config.png) |
+
+## Supported keyboards
+
+Open Akko speaks the protocol of Akko's **YC3121 / YC500** chip family (USB VID `0x3151`).
+
+| Status | Models |
+|---|---|
+| ✅ Tested on hardware | 5075B Plus (USB, firmware 1.04) |
+| 🟡 Same family, untested | 5075B Plus-S, 5075S, 5098B, 5108B Plus, 3087S, 3098S, 3108 V3, TAC87, TOP75B, MU01, MU02, MOD007B PC, MOD007B HE / HE PC (no magnetic-switch settings) |
+| ❌ Not supported | Hall-effect (HE / magnetic) V3/V5 boards, Bluetooth-only configuration, mice, other chip families |
+
+Any other Akko keyboard is detected and shown as *"untested model, basic features
+only"*. If you own one of the 🟡 models, please run the self-test (below) and
+[report the result](https://github.com/Yuxis445/Open-Akko/issues/new).
+
 ## Install
+
+### Prebuilt binary (x86_64)
+
+Download `openakko-<version>-x86_64-linux.tar.gz` from the
+[Releases](https://github.com/Yuxis445/Open-Akko/releases) page.
+
+```bash
+sha256sum -c openakko-v0.2.0-x86_64-linux.tar.gz.sha256   # optional
+tar xzf openakko-v0.2.0-x86_64-linux.tar.gz && cd openakko-v0.2.0-x86_64-linux
+
+# let your user access the keyboard (once), then replug it
+sudo cp 70-akko.rules /etc/udev/rules.d/
+sudo udevadm control --reload && sudo udevadm trigger
+
+./openakko            # GUI
+./openakko help       # CLI
+```
+
+The prebuilt binary needs **glibc 2.43 or newer** (current Arch, CachyOS and other
+rolling distros). On Debian, Ubuntu, Fedora and others, build from source.
+
+### From source
 
 ```bash
 # 1. let your user access the keyboard (once), then replug it
@@ -70,6 +120,53 @@ openakko selftest --write           # changes each setting, reads it back, resto
 
 The write test never runs factory reset. Over 2.4 GHz it asks you to tap a key if the
 keyboard falls asleep.
+
+Current results on the reference keyboard (5075B Plus, USB, firmware 1.04):
+`cargo test`: 19 passed · `openakko selftest`: 27 passed, 0 failed.
+
+## Known issues
+
+- **Only one model is hardware-tested.** Everything was verified on a 5075B Plus over
+  USB. Other YC3121/YC500 models use the same protocol, but their layouts, lighting
+  modes and options may differ.
+- **The 2.4 GHz receiver** and the reversible write test (`selftest --write`) still need
+  more real-world testing.
+- **The polling-rate setting is untested.** The 5075B Plus has a fixed 1000 Hz rate, so
+  that control has never been tried on a keyboard that supports changing it.
+- **Bluetooth:** the keyboard can't be configured over Bluetooth. Use the USB cable or the
+  2.4 GHz receiver.
+- **Hall-effect (magnetic switch) settings** (actuation point, rapid trigger, …) are not
+  available, even on HE models that are otherwise detected.
+- **Single-key remaps and profiles:** single-key writes always go to the *active* profile
+  (a firmware behaviour). Switch profile first, then remap.
+- **Fn layers are shared** by all four profiles (also a firmware behaviour).
+- **Macro size:** at most ~252 bytes per macro and 50 macro slots on the keyboard.
+- **Prebuilt binary** needs glibc ≥ 2.43. Build from source on older distros.
+- **No desktop entry or icon yet:** start it from a terminal or make your own launcher.
+
+## Roadmap
+
+Planned work and things that need testing are tracked in
+[GitHub Issues](https://github.com/Yuxis445/Open-Akko/issues). Highlights:
+
+- Hardware reports for more models (help wanted)
+- 2.4 GHz and `selftest --write` test coverage
+- Bluetooth configuration
+- Hall-effect / magnetic-switch settings
+- CI builds with a portable (older-glibc) release binary
+- Packaging: AUR, `.desktop` file and icon
+
+## Contributing / reporting a model
+
+Open an issue with:
+
+```bash
+openakko list
+openakko info
+openakko selftest          # read-only, safe
+```
+
+and say what worked and what didn't in the GUI. Pull requests are welcome.
 
 ## Privacy
 
