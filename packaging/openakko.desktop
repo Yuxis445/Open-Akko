@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Open Akko
+GenericName=Keyboard Configuration
+Comment=Configure Akko keyboards (offline, unofficial)
+Exec=openakko
+Icon=openakko
+Categories=Settings;HardwareSettings;
+Keywords=keyboard;akko;rgb;macro;remap;
+StartupWMClass=openakko
+Terminal=false

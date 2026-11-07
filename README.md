@@ -55,25 +55,53 @@ only"*. If you own one of the 🟡 models, please run the self-test (below) and
 
 ## Install
 
-### Prebuilt binary (x86_64)
+Every [release](https://github.com/Yuxis445/Open-Akko/releases) has packages for the
+common distros (x86_64). They are built on Ubuntu 22.04, so they need **glibc 2.35 or newer**.
+The `.deb`, `.rpm` and Arch packages install the udev rule, a desktop launcher and the icon;
+after installing, **replug the keyboard** once so the new permissions apply.
 
-Download `openakko-<version>-x86_64-linux.tar.gz` from the
-[Releases](https://github.com/Yuxis445/Open-Akko/releases) page.
+### Ubuntu / Debian / Linux Mint / Pop!_OS
 
 ```bash
-sha256sum -c openakko-v0.2.0-x86_64-linux.tar.gz.sha256   # optional
-tar xzf openakko-v0.2.0-x86_64-linux.tar.gz && cd openakko-v0.2.0-x86_64-linux
-
-# let your user access the keyboard (once), then replug it
-sudo cp 70-akko.rules /etc/udev/rules.d/
-sudo udevadm control --reload && sudo udevadm trigger
-
-./openakko            # GUI
-./openakko help       # CLI
+sudo apt install ./openakko_0.2.1-1_amd64.deb
 ```
 
-The prebuilt binary is built by GitHub Actions on Ubuntu 22.04 and needs **glibc 2.35 or
-newer**, so it runs on Ubuntu 22.04+, Debian 12+, Fedora, Arch and most current distros.
+### Fedora / openSUSE
+
+```bash
+sudo dnf install ./openakko-0.2.1-1.x86_64.rpm      # openSUSE: sudo zypper install ./openakko-…rpm
+```
+
+### Arch / CachyOS / Manjaro
+
+PKGBUILDs are in [`packaging/aur/`](packaging/aur): `openakko-bin` (prebuilt) and
+`openakko` (built from source).
+
+```bash
+git clone https://github.com/Yuxis445/Open-Akko.git
+cd Open-Akko/packaging/aur/openakko-bin && makepkg -si
+```
+
+### AppImage (any distro)
+
+```bash
+chmod +x OpenAkko-v0.2.1-x86_64.AppImage
+./OpenAkko-v0.2.1-x86_64.AppImage
+```
+
+An AppImage can't install system files, so add the udev rule yourself (once), then replug
+the keyboard:
+
+```bash
+curl -LO https://raw.githubusercontent.com/Yuxis445/Open-Akko/main/70-akko.rules
+sudo cp 70-akko.rules /etc/udev/rules.d/
+sudo udevadm control --reload && sudo udevadm trigger
+```
+
+### Plain tarball
+
+`openakko-<version>-x86_64-linux.tar.gz` holds the binary, the udev rule, the desktop
+file and the icon. Verify it with `sha256sum -c SHA256SUMS --ignore-missing`.
 
 ### From source
 
@@ -144,7 +172,7 @@ Current results on the reference keyboard (5075B Plus, USB, firmware 1.04):
 - **Fn layers are shared** by all four profiles (also a firmware behaviour).
 - **Macro size:** at most ~252 bytes per macro and 50 macro slots on the keyboard.
 - **Prebuilt binary** is x86_64 only and needs glibc ≥ 2.35. Build from source elsewhere.
-- **No desktop entry or icon yet:** start it from a terminal or make your own launcher.
+- **AUR:** the PKGBUILDs are not published to the AUR yet; build them with `makepkg` for now.
 
 ## Roadmap
 
@@ -155,7 +183,7 @@ Planned work and things that need testing are tracked in
 - 2.4 GHz and `selftest --write` test coverage
 - Bluetooth configuration
 - Hall-effect / magnetic-switch settings
-- Packaging: AUR, `.desktop` file and icon
+- Publish to the AUR; Flatpak
 
 ## Contributing / reporting a model
 
@@ -193,6 +221,9 @@ src/
 data/           tables extracted from Akko Cloud v4 (regenerate with tools/)
 tools/          extraction scripts (build_data.py runs everything)
 70-akko.rules   udev rule (uaccess for VID 3151)
+packaging/      desktop file, icon, AppStream metadata, AUR PKGBUILDs, AppImage script
+                (.deb / .rpm settings live in Cargo.toml)
+.github/        CI and release workflows
 ```
 
 Regenerate `data/` from the official installer:

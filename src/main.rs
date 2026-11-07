@@ -189,13 +189,9 @@ fn main() {
         .with_app_id("openakko")
         .with_inner_size([1480.0, 900.0])
         .with_min_inner_size([1100.0, 700.0]);
-    let home = std::env::var("HOME").unwrap_or_default();
-    for p in [format!("{home}/.local/share/icons/hicolor/256x256/apps/openakko.png")] {
-        if let Ok(img) = image::open(&p) {
-            let img = img.to_rgba8();
-            viewport = viewport.with_icon(eframe::egui::IconData { width: img.width(), height: img.height(), rgba: img.into_raw() });
-            break;
-        }
+    if let Ok(img) = image::load_from_memory(include_bytes!("../packaging/openakko-256.png")) {
+        let img = img.to_rgba8();
+        viewport = viewport.with_icon(eframe::egui::IconData { width: img.width(), height: img.height(), rgba: img.into_raw() });
     }
     let opts = eframe::NativeOptions { viewport, ..Default::default() };
     if let Err(e) = eframe::run_native("Open Akko", opts, Box::new(|cc| Ok(Box::new(app::App::new(cc))))) {

@@ -1,0 +1,22 @@
+pkgbase = openakko
+	pkgdesc = Native, offline configurator for Akko keyboards (YC3121/YC500 family)
+	pkgver = 0.2.1
+	pkgrel = 1
+	url = https://github.com/Yuxis445/Open-Akko
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	makedepends = cargo
+	depends = gcc-libs
+	depends = glibc
+	depends = libxkbcommon
+	depends = libglvnd
+	depends = hicolor-icon-theme
+	optdepends = wayland: Wayland session support
+	optdepends = libx11: X11 session support
+	conflicts = openakko-bin
+	options = !lto
+	source = openakko-0.2.1.tar.gz::https://github.com/Yuxis445/Open-Akko/archive/refs/tags/v0.2.1.tar.gz
+	sha256sums = SKIP
+
+pkgname = openakko

@@ -1,9 +1,13 @@
 [package]
 name = "openakko"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "Open Akko: native Linux configurator for Akko keyboards (YC3121/YC500 family). Offline, no telemetry."
 license = "MIT"
+authors = ["João Victor Freitas <luffy2033@outlook.com>"]
+repository = "https://github.com/Yuxis445/Open-Akko"
+homepage = "https://github.com/Yuxis445/Open-Akko"
+readme = "README.md"
 
 [dependencies]
 eframe = { version = "0.31", default-features = false, features = ["glow", "wayland", "x11", "default_fonts"] }
@@ -18,3 +22,42 @@ opt-level = 3
 lto = true
 strip = true
 codegen-units = 1
+
+# Ubuntu / Debian: cargo deb --no-build
+[package.metadata.deb]
+maintainer = "João Victor Freitas <luffy2033@outlook.com>"
+section = "utils"
+priority = "optional"
+depends = "$auto, libxkbcommon0, libegl1, libgl1"
+extended-description = "Native, offline configurator for Akko keyboards (YC3121 / YC500 family). Unofficial; not affiliated with Akko."
+maintainer-scripts = "packaging/debian/"
+assets = [
+    ["target/release/openakko", "usr/bin/", "755"],
+    ["70-akko.rules", "usr/lib/udev/rules.d/", "644"],
+    ["packaging/openakko.desktop", "usr/share/applications/", "644"],
+    ["packaging/openakko.svg", "usr/share/icons/hicolor/scalable/apps/", "644"],
+    ["packaging/openakko-256.png", "usr/share/icons/hicolor/256x256/apps/openakko.png", "644"],
+    ["packaging/io.github.yuxis445.OpenAkko.metainfo.xml", "usr/share/metainfo/", "644"],
+    ["README.md", "usr/share/doc/openakko/", "644"],
+]
+
+# Fedora / openSUSE: cargo generate-rpm
+[package.metadata.generate-rpm]
+summary = "Native, offline configurator for Akko keyboards"
+post_install_script = "udevadm control --reload-rules 2>/dev/null; udevadm trigger --subsystem-match=hidraw 2>/dev/null; exit 0"
+post_uninstall_script = "udevadm control --reload-rules 2>/dev/null; exit 0"
+assets = [
+    { source = "target/release/openakko", dest = "/usr/bin/openakko", mode = "755" },
+    { source = "70-akko.rules", dest = "/usr/lib/udev/rules.d/70-akko.rules", mode = "644" },
+    { source = "packaging/openakko.desktop", dest = "/usr/share/applications/openakko.desktop", mode = "644" },
+    { source = "packaging/openakko.svg", dest = "/usr/share/icons/hicolor/scalable/apps/openakko.svg", mode = "644" },
+    { source = "packaging/openakko-256.png", dest = "/usr/share/icons/hicolor/256x256/apps/openakko.png", mode = "644" },
+    { source = "packaging/io.github.yuxis445.OpenAkko.metainfo.xml", dest = "/usr/share/metainfo/io.github.yuxis445.OpenAkko.metainfo.xml", mode = "644" },
+    { source = "README.md", dest = "/usr/share/doc/openakko/README.md", mode = "644", doc = true },
+    { source = "LICENSE", dest = "/usr/share/licenses/openakko/LICENSE", mode = "644" },
+]
+
+[package.metadata.generate-rpm.requires]
+libxkbcommon = "*"
+mesa-libEGL = "*"
+mesa-libGL = "*"

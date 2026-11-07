@@ -32,18 +32,48 @@ jobs:
         run: cargo test --release --locked
       - name: Build
         run: cargo build --release --locked
-      - name: Package
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deb,cargo-generate-rpm
+      - name: Package tarball
         run: |
           NAME=openakko-${TAG}-x86_64-linux
           mkdir -p dist/$NAME
           cp target/release/openakko 70-akko.rules README.md dist/$NAME/
           [ -f LICENSE ] && cp LICENSE dist/$NAME/
+          [ -d packaging ] && cp packaging/openakko.desktop packaging/openakko.svg packaging/openakko-256.png \
+            packaging/io.github.yuxis445.OpenAkko.metainfo.xml dist/$NAME/
           echo "Required glibc: $(objdump -T dist/$NAME/openakko | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1)"
           tar -C dist -czf dist/$NAME.tar.gz $NAME
-          (cd dist && sha256sum $NAME.tar.gz > $NAME.tar.gz.sha256)
+          rm -rf dist/$NAME
+      - name: Package .deb (Ubuntu / Debian)
+        if: hashFiles('packaging/openakko.desktop') != ''
+        run: |
+          cargo deb --no-build --no-strip --output dist/
+          sudo apt-get install -y ./dist/*.deb
+          openakko help >/dev/null && echo "deb install OK"
+          dpkg -L openakko
+      - name: Package .rpm (Fedora / openSUSE)
+        if: hashFiles('packaging/openakko.desktop') != ''
+        run: |
+          cargo generate-rpm --output dist/
+          sudo apt-get install -y rpm
+          rpm -qpl dist/*.rpm
+          rpm -qpR dist/*.rpm
+      - name: Package AppImage
+        if: hashFiles('packaging/appimage.sh') != ''
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+        run: |
+          curl -sSL -o /tmp/appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x /tmp/appimagetool
+          APPIMAGETOOL=/tmp/appimagetool packaging/appimage.sh "$TAG" dist
+          ./dist/*.AppImage help >/dev/null && echo "AppImage runs OK"
+      - name: Checksums
+        run: |
+          cd dist && sha256sum * > SHA256SUMS && cat SHA256SUMS
+          for f in *.tar.gz; do sha256sum "$f" > "$f.sha256"; done
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          files: |
-            dist/*.tar.gz
-            dist/*.tar.gz.sha256
+          files: dist/*

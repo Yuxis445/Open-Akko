@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.yuxis445.OpenAkko</id>
+  <name>Open Akko</name>
+  <summary>Configure Akko keyboards offline</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <developer id="io.github.yuxis445">
+    <name>Yuxis445</name>
+  </developer>
+  <description>
+    <p>
+      Native, offline Linux configurator for Akko keyboards of the YC3121 / YC500 family.
+      Remap keys and the knob, edit both Fn layers, record macros, control lighting and
+      change keyboard settings. No account and no telemetry. Unofficial; not affiliated with Akko.
+    </p>
+  </description>
+  <launchable type="desktop-id">openakko.desktop</launchable>
+  <url type="homepage">https://github.com/Yuxis445/Open-Akko</url>
+  <url type="bugtracker">https://github.com/Yuxis445/Open-Akko/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/Yuxis445/Open-Akko/main/docs/screenshots/config.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.2.1" date="2026-11-07"/>
+    <release version="0.2.0" date="2026-11-07"/>
+  </releases>
+</component>
