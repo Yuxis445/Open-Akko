@@ -1,5 +1,7 @@
 # Open Akko
 
+[![CI](https://github.com/Yuxis445/Open-Akko/actions/workflows/ci.yml/badge.svg)](https://github.com/Yuxis445/Open-Akko/actions/workflows/ci.yml)
+
 Native, offline Linux configurator for Akko keyboards (YC3121 / YC500 family, e.g. the
 5075B Plus). An unofficial replacement for **Akko Cloud Driver v4**, built by reverse
 engineering the Windows app (v371.2.19). Pure Rust (egui): no Electron, no web engine,
@@ -70,8 +72,8 @@ sudo udevadm control --reload && sudo udevadm trigger
 ./openakko help       # CLI
 ```
 
-The prebuilt binary needs **glibc 2.43 or newer** (current Arch, CachyOS and other
-rolling distros). On Debian, Ubuntu, Fedora and others, build from source.
+The prebuilt binary is built by GitHub Actions on Ubuntu 22.04 and needs **glibc 2.35 or
+newer**, so it runs on Ubuntu 22.04+, Debian 12+, Fedora, Arch and most current distros.
 
 ### From source
 
@@ -141,7 +143,7 @@ Current results on the reference keyboard (5075B Plus, USB, firmware 1.04):
   (a firmware behaviour). Switch profile first, then remap.
 - **Fn layers are shared** by all four profiles (also a firmware behaviour).
 - **Macro size:** at most ~252 bytes per macro and 50 macro slots on the keyboard.
-- **Prebuilt binary** needs glibc ≥ 2.43. Build from source on older distros.
+- **Prebuilt binary** is x86_64 only and needs glibc ≥ 2.35. Build from source elsewhere.
 - **No desktop entry or icon yet:** start it from a terminal or make your own launcher.
 
 ## Roadmap
@@ -153,7 +155,6 @@ Planned work and things that need testing are tracked in
 - 2.4 GHz and `selftest --write` test coverage
 - Bluetooth configuration
 - Hall-effect / magnetic-switch settings
-- CI builds with a portable (older-glibc) release binary
 - Packaging: AUR, `.desktop` file and icon
 
 ## Contributing / reporting a model
