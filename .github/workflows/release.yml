@@ -1,0 +1,49 @@
+name: Release
+
+# Builds on Ubuntu 22.04 so the binary only needs glibc 2.35+ and runs on most distros.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to rebuild and (re)upload assets for, e.g. v0.2.0
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: System libraries
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libgl1-mesa-dev
+      - name: Test
+        run: cargo test --release --locked
+      - name: Build
+        run: cargo build --release --locked
+      - name: Package
+        run: |
+          NAME=openakko-${TAG}-x86_64-linux
+          mkdir -p dist/$NAME
+          cp target/release/openakko 70-akko.rules README.md dist/$NAME/
+          [ -f LICENSE ] && cp LICENSE dist/$NAME/
+          echo "Required glibc: $(objdump -T dist/$NAME/openakko | grep -o 'GLIBC_[0-9.]*' | sort -uV | tail -1)"
+          tar -C dist -czf dist/$NAME.tar.gz $NAME
+          (cd dist && sha256sum $NAME.tar.gz > $NAME.tar.gz.sha256)
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          files: |
+            dist/*.tar.gz
+            dist/*.tar.gz.sha256
