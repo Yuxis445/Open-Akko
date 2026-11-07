@@ -7,15 +7,12 @@ use std::sync::OnceLock;
 #[derive(Deserialize, Clone, Debug)]
 pub struct DeviceEntry {
     pub id: i64,
-    pub pid: u32,
     pub name: Option<String>,
     #[serde(rename = "displayName")]
     pub display_name: Option<String>,
     #[serde(rename = "keyLayout")]
     pub key_layout: Option<String>,
     pub layer: Option<u32>,
-    #[serde(default)]
-    pub magnetism: bool,
     #[serde(default)]
     pub supported: bool,
 }

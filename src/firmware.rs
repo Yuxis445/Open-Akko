@@ -12,7 +12,6 @@ const API: &str = "https://api2.rongyuan.tech:3816/api/v2/get_fw_version";
 #[derive(Clone, Debug)]
 pub struct FwCheck {
     pub latest: String,       // e.g. "v104"
-    pub latest_num: u32,      // parsed like the official app: digits read as hex
     pub update_available: bool,
 }
 
@@ -34,7 +33,7 @@ pub fn check(device_id: i64, current: u16) -> Result<FwCheck, String> {
     let full = resp["data"]["version_str"].as_str().ok_or("reply has no version")?.to_string();
     let main = full.split('_').next().unwrap_or(&full).to_string();
     let latest_num = parse_version(&main).ok_or("unreadable version")?;
-    Ok(FwCheck { latest: full, latest_num, update_available: latest_num > current as u32 })
+    Ok(FwCheck { latest: full, update_available: latest_num > current as u32 })
 }
 
 #[cfg(test)]

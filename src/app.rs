@@ -79,12 +79,12 @@ fn style_for(ctx: &egui::Context, theme: egui::Theme) {
         v.faint_bg_color = pal.card2;
         v.override_text_color = Some(pal.text);
         v.selection.bg_fill = pal.purple;
-        v.selection.stroke = Stroke::new(1.0, Color32::WHITE);
+        v.selection.stroke = Stroke::new(1.0_f32, Color32::WHITE);
         v.hyperlink_color = pal.purple;
         v.widgets.inactive.weak_bg_fill = pal.chip;
         v.widgets.inactive.bg_fill = pal.chip;
         v.widgets.active.bg_fill = pal.purple;
-        v.widgets.hovered.bg_stroke = Stroke::new(1.0, pal.purple);
+        v.widgets.hovered.bg_stroke = Stroke::new(1.0_f32, pal.purple);
         v.slider_trailing_fill = true;
         style.spacing.item_spacing = Vec2::new(8.0, 8.0);
         style.spacing.button_padding = Vec2::new(10.0, 5.0);
@@ -335,7 +335,7 @@ impl App {
             Vec2::new(full.width() - 32.0, card_h),
         );
         if rect.top() > ui.cursor().top() {
-            ui.painter().rect(rect, 14.0, pal().devcard, Stroke::new(1.0, pal().hover), StrokeKind::Inside);
+            ui.painter().rect(rect, 14.0, pal().devcard, Stroke::new(1.0_f32, pal().hover), StrokeKind::Inside);
             let (name, icon_col, status, status_col) = match &self.dev {
                 Some(d) => {
                     let s = match (d.info.connection, smoothed_battery(&self.battery)) {
@@ -433,7 +433,7 @@ impl App {
                 if !knob_drawn {
                     knob_drawn = true;
                     painter.circle_filled(r.center(), r.width() / 2.0, pal().key);
-                    painter.circle_stroke(r.center(), r.width() / 2.0, Stroke::new(2.0, pal().key_border));
+                    painter.circle_stroke(r.center(), r.width() / 2.0, Stroke::new(2.0_f32, pal().key_border));
                 }
                 let third = r.width() / 3.0;
                 let cx = r.left() + third * (s.knob_part.unwrap_or(1) as f32 + 0.5);
@@ -449,7 +449,7 @@ impl App {
                 let cr = CornerRadius::same((5.0 * scale) as u8);
                 let lum_b = 0.299 * fill.r() as f32 + 0.587 * fill.g() as f32 + 0.114 * fill.b() as f32;
                 let border = outline.unwrap_or(if lum_b > 200.0 { Color32::from_gray(0x70) } else { pal().key_border });
-                painter.rect(r, cr, fill, Stroke::new(1.5, border), StrokeKind::Inside);
+                painter.rect(r, cr, fill, Stroke::new(1.5_f32, border), StrokeKind::Inside);
                 // fit the label inside the key: shrink the font, then truncate with "…"
                 let max_w = r.width() - 6.0 * scale.max(0.8);
                 let mut fs = 11.5 * scale.clamp(0.8, 1.4);
@@ -698,7 +698,7 @@ impl App {
                     ui.color_edit_button_srgb(&mut self.paint_color);
                     for c in [0xFF0000u32, 0xFF8000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFFFFFF, 0x000000] {
                         let (r, resp) = ui.allocate_exact_size(Vec2::splat(20.0), Sense::click());
-                        ui.painter().rect(r, 4.0, to_c32(c), Stroke::new(1.0, pal().key_border), StrokeKind::Inside);
+                        ui.painter().rect(r, 4.0, to_c32(c), Stroke::new(1.0_f32, pal().key_border), StrokeKind::Inside);
                         if resp.clicked() { self.paint_color = [(c >> 16) as u8, (c >> 8) as u8, c as u8]; }
                     }
                     if ui.button("Fill all").clicked() { let c = from_rgb(self.paint_color); self.key_colors.iter_mut().for_each(|x| *x = c); }
@@ -1149,7 +1149,7 @@ fn chip(ui: &mut egui::Ui, t: &str, on: bool) -> egui::Response {
 
 fn legend(ui: &mut egui::Ui, c: Color32, t: &str) {
     let (r, _) = ui.allocate_exact_size(Vec2::splat(12.0), Sense::hover());
-    ui.painter().rect(r, 3.0, pal().key, Stroke::new(2.0, c), StrokeKind::Inside);
+    ui.painter().rect(r, 3.0, pal().key, Stroke::new(2.0_f32, c), StrokeKind::Inside);
     ui.label(RichText::new(t).size(12.5).color(pal().muted));
     ui.add_space(10.0);
 }
@@ -1171,7 +1171,7 @@ fn light_editor(ui: &mut egui::Ui, l: &mut Light, modes: &[(u8, &str)], id: &str
             if ui.color_edit_button_srgb(&mut c).changed() { l.color = from_rgb(c); l.rainbow = false; }
             for p in [0xFF0000u32, 0x00FF00, 0x0000FF, 0xFF8000, 0xFF00FF, 0xFFFF00, 0xFFFFFF] {
                 let (r, resp) = ui.allocate_exact_size(Vec2::splat(20.0), Sense::click());
-                ui.painter().rect(r, 10.0, to_c32(p), Stroke::new(if l.color == p && !l.rainbow { 2.0 } else { 1.0 }, if l.color == p && !l.rainbow { pal().purple } else { pal().key_border }), StrokeKind::Inside);
+                ui.painter().rect(r, 10.0, to_c32(p), Stroke::new(if l.color == p && !l.rainbow { 2.0 } else { 1.0_f32 }, if l.color == p && !l.rainbow { pal().purple } else { pal().key_border }), StrokeKind::Inside);
                 if resp.clicked() { l.color = p; l.rainbow = false; }
             }
             ui.checkbox(&mut l.rainbow, "🌈 Rainbow");

@@ -363,10 +363,6 @@ impl Keyboard {
         self.model.default_matrix.len() / 4
     }
 
-    fn find_action(&self, a: Action, nth: usize) -> Option<usize> {
-        (0..self.slot_count()).filter(|&i| self.matrix_entry(i) == a).nth(nth)
-    }
-
     fn build_slots(&mut self) {
         let t = tables();
         let layout: Option<&Layout> = self.info.layout_name.as_ref().and_then(|n| t.layouts.get(n));
