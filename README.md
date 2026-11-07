@@ -258,3 +258,7 @@ A read is SET_FEATURE(cmd), then ~10 ms, then GET_FEATURE.
 
 Not supported: Bluetooth configuration, hall-effect (magnetic switch) settings, screens,
 firmware flashing (intentionally, because of the bricking risk).
+
+## License
+
+[MIT](LICENSE). Open Akko is an unofficial project and is not affiliated with or endorsed by Akko.
