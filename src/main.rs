@@ -178,6 +178,12 @@ fn cli(args: &[String]) -> Result<(), String> {
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if !args.is_empty() {
+        // Exit quietly like other CLI tools when stdout is closed early (`openakko info | head -1`)
+        // instead of panicking on "Broken pipe". Not for fwcheck, which writes to a network socket.
+        if args[0] != "fwcheck" {
+            // SAFETY: called once at startup, before any other threads exist.
+            unsafe { libc::signal(libc::SIGPIPE, libc::SIG_DFL); }
+        }
         if let Err(m) = cli(&args) {
             eprintln!("error: {m}");
             std::process::exit(1);
