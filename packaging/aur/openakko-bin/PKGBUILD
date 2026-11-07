@@ -12,7 +12,7 @@ optdepends=('wayland: Wayland session support' 'libx11: X11 session support')
 provides=("$_pkgname")
 conflicts=("$_pkgname")
 source=("$url/releases/download/v$pkgver/$_pkgname-v$pkgver-x86_64-linux.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('560ef4bb6f56dd23b716f334aa7947cf547b0eb7d4a8539d5ab7180bfba3f77a')
 
 package() {
   cd "$_pkgname-v$pkgver-x86_64-linux"

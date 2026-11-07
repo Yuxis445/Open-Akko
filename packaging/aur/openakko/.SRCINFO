@@ -17,6 +17,6 @@ pkgbase = openakko
 	conflicts = openakko-bin
 	options = !lto
 	source = openakko-0.2.1.tar.gz::https://github.com/Yuxis445/Open-Akko/archive/refs/tags/v0.2.1.tar.gz
-	sha256sums = SKIP
+	sha256sums = 592d1ff19ba63f1d0315f39b93fbab773626491f8247fba09ec44be26c70c2c6
 
 pkgname = openakko

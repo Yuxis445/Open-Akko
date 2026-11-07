@@ -12,7 +12,7 @@ makedepends=('cargo')
 conflicts=('openakko-bin')
 options=('!lto')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('592d1ff19ba63f1d0315f39b93fbab773626491f8247fba09ec44be26c70c2c6')
 
 prepare() {
   cd "Open-Akko-$pkgver"
@@ -24,6 +24,7 @@ build() {
   cd "Open-Akko-$pkgver"
   export RUSTUP_TOOLCHAIN=stable
   export CARGO_TARGET_DIR=target
+  export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$srcdir=/build"
   cargo build --frozen --release
 }
 
