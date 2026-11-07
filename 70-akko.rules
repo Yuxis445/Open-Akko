@@ -1,0 +1,3 @@
+# Akko / MonsGeek (ROYUAN, VID 0x3151) - allow logged-in user access to hidraw
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3151", MODE="0660", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="3151", MODE="0660", TAG+="uaccess"
